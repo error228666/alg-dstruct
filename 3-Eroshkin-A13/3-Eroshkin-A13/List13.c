@@ -1,216 +1,194 @@
 #include "List13.h"
 
-
-
-void PrintArray(int count, int* array)
+list* CreateList(int Num)
 {
-    int i;
-    for (i = 0; i < count; i++)
-        printf("%i ", array[i]);
-}
-
-void PrintList(list* Head)
-{
-    list* Cur = Head;
-    while (Cur != NULL)
-    {
-        PrintArray(Cur->NumOfFilled, Cur->array);
-        printf("\n");
-        Cur = Cur->Next;
-    }
-    return;
-}
-list* CreateList(int num)
-{
-    list* res = (list*)malloc(sizeof(list));
-    if (res == NULL)
+    list* Res = (list*)malloc(sizeof(list));
+    if (Res == NULL)
         return NULL;
+    Res->NumOfFilled = 1;
+    Res->Next = NULL;
+    Res->Array[0] = Num;
 
-    res->count = Count;
-    res->NumOfFilled = 1;
-    res->Next = NULL;
-    res->array = (int*)malloc(sizeof(int) * Count);
-    res->array[0] = num;
-
-    return res;
+    return Res;
 }
 
 void DestoyList(list* L)
 {
-    list* cur;
+    list* Cur;
     while (L != NULL)
     {
-        cur = L;
+        Cur = L;
         L = L->Next;
-        free(cur->array);
-        free(cur);
+        free(Cur);
     }
 }
-void AddToList(list* L, int key)
+int AddToList(list* L, int Key)
 {
-    list* cur = L;
-    list* new;
-    while (cur->NumOfFilled == cur->count)
+    list* Cur = L;
+    list* New;
+    while (Cur->NumOfFilled == 3)
     {
-        if (cur->Next == NULL)
+        if (Cur->Next == NULL)
             break;
-        cur = cur->Next;
+        Cur = Cur->Next;
     }
-    if (cur->NumOfFilled == cur->count && cur->Next == NULL)
-        cur->Next = CreateList(key);
+    if (Cur->NumOfFilled == 3 && Cur->Next == NULL)
+    {
+        Cur->Next = CreateList(Key);
+        if (Cur->Next == NULL)
+            return 0;
+    }
     else
     {
-        cur->array[cur->NumOfFilled] = key;
-        cur->NumOfFilled++;
+        Cur->Array[Cur->NumOfFilled] = Key;
+        Cur->NumOfFilled++;
     }
+    return 1;
 }
 
-int FindNumberByKey(list* L, int key)
+int FindNumberByKey(list* L, int Key, int* Number)
 {
-    list* cur = L;
-    int lilcounter = 0;
-    int counter = 1;
-    while (cur != NULL)
+    list* Cur = L;
+    int LilCounter = 0;
+    int Counter = 1;
+    while (Cur != NULL)
     {
-        while (cur->NumOfFilled > lilcounter)
+        while (Cur->NumOfFilled > LilCounter)
         {
-            if (cur->array[lilcounter] == key)
-                return counter;
-            lilcounter++;
-            counter++;
+            if (Cur->Array[LilCounter] == Key)
+            {
+                *Number = Counter;
+                return 1;
+            }
+            LilCounter++;
+            Counter++;
         }
-        cur = cur->Next;
-        lilcounter = 0;
+        Cur = Cur->Next;
+        LilCounter = 0;
     }
     return 0;
 }
 
-int FindKeyByNumber(list* L, int number)
+int FindKeyByNumber(list* L, int Number, int* Key)
 {
-    list* cur = L;
-    int lilcounter = 0;
-    int counter = 1;
-    while (cur != NULL)
+    list* Cur = L;
+    int LilCounter = 0;
+    int Counter = 1;
+    while (Cur != NULL)
     {
-        while (cur->NumOfFilled > lilcounter)
+        while (Cur->NumOfFilled > LilCounter)
         {
-            if (number == counter)
-                return cur->array[lilcounter];
-            lilcounter++;
-            counter++;
+            if (Number == Counter)
+            {
+                *Key = Cur->Array[LilCounter];
+                return 1;
+            }
+            LilCounter++;
+            Counter++;
         }
-        cur = cur->Next;
-        lilcounter = 0;
+        Cur = Cur->Next;
+        LilCounter = 0;
     }
     return 0;
 }
 
 int Counter(list* L)
 {
-    list* cur = L;
-    int lilcounter = 0;
-    int counter = 0;
-    while (cur != NULL)
+    list* Cur = L;
+    if (L == NULL)
+        return 0;
+    int Counter = Cur->NumOfFilled;
+    while (Cur->Next != NULL)
     {
-        while (cur->NumOfFilled > lilcounter)
-        {
-            lilcounter++;
-            counter++;
-        }
-        cur = cur->Next;
-        lilcounter = 0;
+        Cur = Cur->Next;
+        Counter += Cur->NumOfFilled;
     }
-    return counter;
+    return Counter;
 }
 
-int FindNextByKey(list* L, int key)
+int FindNextByKey(list* L, int Key, int* NextKey)
 {
-    list* cur = L;
-    int lilcounter = 0;
-    while (cur != NULL)
+    list* Cur = L;
+    int LilCounter = 0;
+    while (Cur != NULL)
     {
-        while (cur->NumOfFilled > lilcounter)
+        while (Cur->NumOfFilled > LilCounter)
         {
-            if (cur->array[lilcounter] == key)
+            if (Cur->Array[LilCounter] == Key)
             {
-                if (lilcounter == cur->NumOfFilled - 1)
-                    return cur->Next->array[0];
-                else
-                    return cur->array[lilcounter + 1];
-            }
-            lilcounter++;
-        }
-        cur = cur->Next;
-        lilcounter = 0;
-    }
-}
-
-
-
-void DeleteByNumber(list* l, int number)
-{
-    list* cur = l;
-    list* tmp = NULL;
-
-    int lilcounter = 0;
-    int counter = 1;
-
-    while (1)
-    {
-        while (cur->NumOfFilled > lilcounter)
-        {
-            if (counter == number)
-                break;
-            counter++;
-            lilcounter++;
-        }
-        if (counter == number)
-        {
-            if (counter % cur->count == 1 && counter != 1)
-            {
-                if (cur->Next->NumOfFilled == 1)
+                if (LilCounter == Cur->NumOfFilled - 1)
                 {
-                    cur->Next = tmp;
-                    cur->Next = NULL;
-                    free(tmp);
-                    return;
+                    if (Cur->Next == 0)
+                        return 0;
+                    else
+                    {
+                        *NextKey = Cur->Next->Array[0];
+                        return 1;
+                    }
                 }
-                cur = cur->Next;
-                lilcounter = 0;
+                else
+                {
+                    *NextKey = Cur->Array[LilCounter + 1];
+                    return 1;
+                }
             }
-            break;
-
+            LilCounter++;
         }
-        cur = cur->Next;
-        lilcounter = 0;
-
+        Cur = Cur->Next;
+        LilCounter = 0;
     }
-    while (1)
+    return 0;
+}
+
+
+
+int DeleteByNumber(list* L, int Number)
+{
+    list* Cur = L;
+    list* Prev = NULL;
+    list* Tmp = NULL;
+    int LilCounter = 0;
+    int BigCounter, i;
+    for (BigCounter = 1; BigCounter < Number; BigCounter++)
     {
-        while (cur->NumOfFilled > lilcounter + 1)
+        if (LilCounter == Cur->NumOfFilled - 1)
         {
-            cur->array[lilcounter] = cur->array[lilcounter + 1];
-            lilcounter++;
-        }
-        if (cur->Next == NULL)
-            break;
-        else
-        {
-            cur->array[lilcounter] = cur->Next->array[0];
-            if (cur->Next->NumOfFilled == 1)
-            {
-                tmp = cur->Next;
-                cur->Next = NULL;
-            }
+            if (Cur->Next == NULL)
+                return 0;
             else
             {
-                cur = cur->Next;
-                lilcounter = 0;
+                LilCounter = 0;
+                Prev = Cur;
+                Cur = Cur->Next;
             }
         }
+        else
+            LilCounter++;
     }
-    if (tmp != NULL)
-        free(tmp);
-    else
-        cur->NumOfFilled--;
+    for (i = LilCounter; i < Cur->NumOfFilled - 1; i++)
+        Cur->Array[i] = Cur->Array[i + 1];
+    Cur->NumOfFilled--;
+    if (Cur->NumOfFilled == 0)
+    {
+        if (Prev == NULL)
+        {
+            if (Cur->Next == NULL)
+                free(Cur);
+            else
+            {
+                for (i = 0; i < Cur->Next->NumOfFilled; i++)
+                    Cur->Array[i] = Cur->Next->Array[i];
+                Cur->NumOfFilled = Cur->Next->NumOfFilled;
+                Tmp = Cur->Next;
+                Cur->Next = Cur->Next->Next;
+                free(Tmp);
+            }
+        }
+        else
+        {
+            Prev->Next = Cur->Next;
+            free(Cur);
+        }
+    }
+    return 1;
 }

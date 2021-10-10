@@ -5,7 +5,8 @@ extern "C" {
 
 #define  _CRTDBG_MAP_ALLOC
 #define _CRT_SECURE_NO_WARNINGS
-#define Count 3
+
+
 #include <crtdbg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,20 +15,19 @@ extern "C" {
 
 	typedef struct list {
 		struct list* Next;
-		int count;
 		int NumOfFilled;
-		int* array;
+		int Array[3];
 	}list;
 
 	void PrintList(list* Head);
-	list* CreateList(int num);
-	void AddToList(list* L, int key);
+	list* CreateList(int Num);
+	int AddToList(list* L, int Key);
 	void DestoyList(list* L);
-	int FindKeyByNumber(list* L, int number);
+	int FindKeyByNumber(list* L, int Number, int* Key);
 	int Counter(list* L);
-	int FindNumberByKey(list* L, int key);
-	int FindNextByKey(list* L, int key);
-	void DeleteByNumber(list* l, int number);
+	int FindNumberByKey(list* L, int Key, int* Number);
+	int FindNextByKey(list* L, int Key, int* NextKey);
+	int DeleteByNumber(list* L, int Number);
 
 #ifdef __cplusplus
 }

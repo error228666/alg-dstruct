@@ -4,256 +4,333 @@
 TEST(CreateList, Creation) 
 {
 	list* L = CreateList(1);
+	
 	ASSERT_NE(L, nullptr);
-	EXPECT_EQ(1, L->array[0]);
+	EXPECT_EQ(1, L->Array[0]);
 	EXPECT_EQ(1, L->NumOfFilled);
-	EXPECT_EQ(Count, L->count);	
 	EXPECT_EQ(nullptr, L->Next);
-	DestoyList(L); 
+	
+	free(L);
 }
 
-TEST(AddToList, Default)
+TEST(AddToList, Default_return1)
 {
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->NumOfFilled = 1;
-	L->count = Count;
-	L->Next = NULL;
-	AddToList(L, 2);
 	ASSERT_NE(L, nullptr);
-	EXPECT_EQ(2, L->array[1]);
-	EXPECT_EQ(2, L->NumOfFilled);
-	EXPECT_EQ(Count, L->count);
-	EXPECT_EQ(nullptr, L->Next);
-	DestoyList(L);
-}
-TEST(AddToList, AddingNewArray)
-{
-	int num = Count + 1;
-	int i;
-	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	for (i = 0; i < Count; i++)
-	{
-		L->array[i] = i + 1;
-	}
-	L->NumOfFilled = Count;
-	L->count = Count;
+	
+	L->Array[0] = 1;
+	L->NumOfFilled = 1;
 	L->Next = NULL;
-	AddToList(L, num);
+	
+	EXPECT_EQ(AddToList(L, 2), 1);
+	ASSERT_NE(L, nullptr);
+	EXPECT_EQ(2, L->Array[1]);
+	EXPECT_EQ(2, L->NumOfFilled);
+	EXPECT_EQ(nullptr, L->Next);
+	
+	free(L);
+}
+TEST(AddToList, AddingNewArray_return1)
+{
+	int num = 4;
+	
+	list* L = (list*)malloc(sizeof(list));
+	ASSERT_NE(L, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;	
+	L->NumOfFilled = 3;
+	L->Next = NULL;
+	
+	EXPECT_EQ(AddToList(L, 4), 1);
 	ASSERT_NE(L->Next, nullptr);
-	EXPECT_EQ(num, L->Next->array[0]);
+	EXPECT_EQ(4, L->Next->Array[0]);
 	EXPECT_EQ(1, L->Next->NumOfFilled);
-	EXPECT_EQ(Count, L->count);
 	EXPECT_EQ(nullptr, L->Next->Next);
-	DestoyList(L);
+	
+	free(L->Next);
+	free(L);
 
 }
-TEST(Counter, EmptyList)
+TEST(Counter, EmptyList_return0)
 {
 	list* L = NULL;
 	ASSERT_EQ(0, Counter(L));
 }
 
-TEST(Counter, Counting)
+TEST(Counter, Default_return4)
 {
-	int i;
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	for (i = 0; i < Count; i++)
-	{
-		L->array[i] = i + 1;
-	}
+	ASSERT_NE(L, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
 	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->Next->array[0] = i + 2;
-	L->NumOfFilled = Count;
+	L->Next->Array[0] = 4;
+	L->NumOfFilled = 3;
 	L->Next->NumOfFilled = 1;
-	L->count = Count;
-	L->Next->count = Count;
 	L->Next->Next = NULL;
-	ASSERT_EQ(i + 1, Counter(L));
-	DestoyList(L);
+	
+	ASSERT_EQ(4, Counter(L));
+	
+	free(L->Next);
+	free(L);
 }
-TEST(FindKeyByNumber, Default)
+TEST(FindKeyByNumber, Default_return1)
 {
+	int Key;
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2; 
-	L->array[2] = 3;
+	ASSERT_NE(L, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2; 
+	L->Array[2] = 3;
 	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->Next->array[0] = 4;
-	L->Next->array[1] = 5;
-	L->Next->array[2] = 6;
-	L->NumOfFilled = Count;
-	L->Next->NumOfFilled = Count;
-	L->count = Count;
-	L->Next->count = Count;
+	L->Next->Array[0] = 4;
+	L->Next->Array[1] = 5;
+	L->Next->Array[2] = 6;
+	L->NumOfFilled = 3;
+	L->Next->NumOfFilled = 3;
 	L->Next->Next = NULL;
-	ASSERT_EQ(5, FindKeyByNumber(L, 5));
-	DestoyList(L);
+	
+	ASSERT_EQ(1, FindKeyByNumber(L, 5, &Key));
+	ASSERT_EQ(Key, 5);
+	
+	free(L->Next);
+	free(L);
 }
 
-TEST(FindKeyByNumber, OutOfRange_expect0)
+TEST(FindKeyByNumber, OutOfRange_return0)
 {
+	int Key;
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
-	L->NumOfFilled = Count;
-	L->count = Count;
+	ASSERT_NE(L, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->NumOfFilled = 3;
 	L->Next = NULL;
-	ASSERT_EQ(0, FindKeyByNumber(L, 4));
+	
+	ASSERT_EQ(0, FindKeyByNumber(L, 4, &Key));
+	
+	free(L);
 }
 
-TEST(FindNumberByKey, Default)
+TEST(FindNumberByKey, Default_return1)
 {
+	int Key;
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
+	ASSERT_NE(L, nullptr);
 	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->Next->array[0] = 4;
-	L->Next->array[1] = 5;
-	L->Next->array[2] = 6;
-	L->NumOfFilled = Count;
-	L->Next->NumOfFilled = Count;
-	L->count = Count;
-	L->Next->count = Count;
+	ASSERT_NE(L->Next, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->Next->Array[0] = 4;
+	L->Next->Array[1] = 5;
+	L->Next->Array[2] = 6;
+	L->NumOfFilled = 3;
+	L->Next->NumOfFilled = 3;
 	L->Next->Next = NULL;
-	ASSERT_EQ(5, FindNumberByKey(L, 5));
-	DestoyList(L);
+
+	ASSERT_EQ(1, FindNumberByKey(L, 5, &Key));
+	ASSERT_EQ(5, Key);
+	
+	free(L->Next);
+	free(L);
 }
 
 TEST(FindNumberByKey, OutOfRange_expect0)
 {
+	int Number;
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
-	L->NumOfFilled = Count;
-	L->count = Count;
+	ASSERT_NE(L, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->NumOfFilled = 3;
 	L->Next = NULL;
-	ASSERT_EQ(0, FindNumberByKey(L, 4));
+	
+	ASSERT_EQ(0, FindNumberByKey(L, 4, &Number));
+	
+	free(L);
 }
 
-TEST(FindNextByKey, Default)
+TEST(FindNextByKey, Default_return1)
 {
+	int NextKey;
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
+	ASSERT_NE(L, nullptr);
 	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->Next->array[0] = 4;
-	L->Next->array[1] = 5;
-	L->Next->array[2] = 6;
-	L->NumOfFilled = Count;
-	L->Next->NumOfFilled = Count;
-	L->count = Count;
-	L->Next->count = Count;
+	ASSERT_NE(L->Next, nullptr);
+
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->Next->Array[0] = 4;
+	L->Next->Array[1] = 5;
+	L->Next->Array[2] = 6;
+	L->NumOfFilled = 3;
+	L->Next->NumOfFilled = 3;
 	L->Next->Next = NULL;
-	ASSERT_EQ(6, FindNextByKey(L, 5));
-	DestoyList(L);
+
+	ASSERT_EQ(1, FindNextByKey(L, 5, &NextKey));
+	ASSERT_EQ(6, NextKey);
+
+	free(L->Next);
+	free(L);
 }
 
-TEST(FindNextByKey, ResaultInNextNode)
+TEST(FindNextByKey, ResaultInNextNode_return1)
 {
+	int NextKey;
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
+	ASSERT_NE(L, nullptr);
 	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->Next->array[0] = 4;
+	ASSERT_NE(L->Next, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->Next->Array[0] = 4;
 	L->Next->NumOfFilled = 1;
-	L->NumOfFilled = Count;
-	L->count = Count;
-	L->Next->count = Count;
+	L->NumOfFilled = 3;
 	L->Next->Next = NULL;
-	ASSERT_EQ(4, FindNextByKey(L, 3));
-	DestoyList(L);
+	
+	ASSERT_EQ(1, FindNextByKey(L, 3, &NextKey));
+	ASSERT_EQ(4, NextKey);
+	
+	free(L->Next);
+	free(L);
 
 }
 
 TEST(DeleteByNumber, Default)
 {
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
+	ASSERT_NE(L, nullptr);
 	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
-	L->Next->array[0] = 4;
-	L->Next->array[1] = 5;
+	ASSERT_NE(L->Next, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->Next->Array[0] = 4;
+	L->Next->Array[1] = 5;
 	L->Next->NumOfFilled = 2;
-	L->Next->count = Count;
-	L->count = Count;
 	L->NumOfFilled = 3;
 	L->Next->Next = NULL;
+	
 	DeleteByNumber(L, 2);
-	ASSERT_EQ(L->array[0], 1);
-	ASSERT_EQ(L->array[1], 3);
-	ASSERT_EQ(L->array[2], 4);
-	ASSERT_EQ(L->Next->array[0], 5);
-	ASSERT_EQ(L->Next->NumOfFilled, 1);
+	ASSERT_EQ(L->Array[0], 1);
+	ASSERT_EQ(L->Array[1], 3);
+	ASSERT_EQ(L->NumOfFilled, 2);
+	ASSERT_EQ(L->Next->Array[0], 4);
+	ASSERT_EQ(L->Next->NumOfFilled, 2);
 	ASSERT_EQ(L->Next->Next, nullptr);
-	DestoyList(L);
+	
+	free(L->Next);
+	free(L);
 }
 
-TEST(DeleteByNumber, DeletingLastKeyInNode)	
+
+TEST(DeleteByNumber, DeletingSingleKeyInLastNode_return1)
 {
 	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
+	ASSERT_NE(L, nullptr);
 	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->Next->array[0] = 4;
-	L->count = Count;
+	ASSERT_NE(L->Next, nullptr);
+	
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->Next->Array[0] = 4;
 	L->NumOfFilled = 3;
 	L->Next->NumOfFilled = 1;
 	L->Next->Next = NULL;
-	DeleteByNumber(L, 3);
-	ASSERT_EQ(L->array[0], 1);
-	ASSERT_EQ(L->array[1], 2);
-	ASSERT_EQ(L->array[2], 4);
+
+	ASSERT_EQ(1, DeleteByNumber(L, 4));
+	ASSERT_EQ(L->Array[0], 1);
+	ASSERT_EQ(L->Array[1], 2);
+	ASSERT_EQ(L->Array[2], 3);
 	ASSERT_EQ(L->Next, nullptr);
 	ASSERT_EQ(L->NumOfFilled, 3);
-	DestoyList(L);
-}
-TEST(DeleteByNumber, DeletingSingleKeyInLastNode)
-{
-	list* L = (list*)malloc(sizeof(list));
-	L->array = (int*)malloc(sizeof(int) * Count);
-	L->array[0] = 1;
-	L->array[1] = 2;
-	L->array[2] = 3;
-	L->Next = (list*)malloc(sizeof(list));
-	L->Next->array = (int*)malloc(sizeof(int) * Count);
-	L->Next->array[0] = 4;
-	L->count = Count;
-	L->NumOfFilled = 3;
-	L->Next->NumOfFilled = 1;
-	L->Next->Next = NULL;
-	DeleteByNumber(L, 4);
-	ASSERT_EQ(L->array[0], 1);
-	ASSERT_EQ(L->array[1], 2);
-	ASSERT_EQ(L->array[2], 3);
-	ASSERT_EQ(L->Next, nullptr);
-	ASSERT_EQ(L->NumOfFilled, 3);
-	DestoyList(L);
+	
+	free(L->Next);
+	free(L);
 }
 
+TEST(DeleteByNumber, DeletingSingleElementInHead_return1)
+{
+	list* L = (list*)malloc(sizeof(list));
+	ASSERT_NE(L, nullptr);
+	
+	L->Next = (list*)malloc(sizeof(list));
+	ASSERT_NE(L->Next, nullptr);
+	
+	L->Array[0] = 1;
+	L->Next->Array[0] = 2;
+	L->NumOfFilled = 1;
+	L->Next->NumOfFilled = 1;
+	L->Next->Next = NULL;
+
+	ASSERT_EQ(1, DeleteByNumber(L, 1));
+	ASSERT_EQ(L->Array[0], 2);
+	ASSERT_EQ(L->Next, nullptr);
+	ASSERT_EQ(L->NumOfFilled, 1);
+	free(L->Next);
+	free(L);
+}
+
+TEST(DeleteByNumber, DeletingSingleElementNotInHead_return1)
+{
+	list* L = (list*)malloc(sizeof(list));
+	ASSERT_NE(L, nullptr);
+	L->Next = (list*)malloc(sizeof(list));
+	ASSERT_NE(L->Next, nullptr);
+	L->Next->Next = (list*)malloc(sizeof(list));
+	ASSERT_NE(L->Next->Next, nullptr);
+
+	L->Array[0] = 1;
+	L->Next->Array[0] = 2;
+	L->Next->Next->Array[0] = 3;
+	L->NumOfFilled = 1;
+	L->Next->NumOfFilled = 1;
+	L->Next->Next->NumOfFilled = 1;
+	L->Next->Next->Next = NULL;
+
+	ASSERT_EQ(1, DeleteByNumber(L, 2));
+	ASSERT_EQ(L->Array[0], 1);
+	ASSERT_EQ(L->Next->Array[0], 3);
+	ASSERT_EQ(L->Next->Next, nullptr);
+	ASSERT_EQ(L->NumOfFilled, 1);
+	ASSERT_EQ(L->Next->NumOfFilled, 1);
+
+	free(L->Next);
+	free(L);
+}
+
+TEST(DeleteByNumber, OutOfRange_return0)
+{
+	list* L = (list*)malloc(sizeof(list));
+	ASSERT_NE(L, nullptr);
+	L->Next = (list*)malloc(sizeof(list));
+	ASSERT_NE(L->Next, nullptr);
+
+	L->Array[0] = 1;
+	L->Next->Array[0] = 2;
+	L->NumOfFilled = 1;
+	L->Next->NumOfFilled = 1;
+	L->Next->Next = NULL;
+
+	ASSERT_EQ(0, DeleteByNumber(L, 3));
+
+	free(L->Next);
+	free(L);
+}
 
