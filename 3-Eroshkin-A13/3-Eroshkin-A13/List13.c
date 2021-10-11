@@ -33,13 +33,13 @@ int AddToList(list** L, int Key)
             return 0;
         return 1;
     }
-    while (Cur->NumOfFilled == 3)
+    while (Cur->NumOfFilled == COUNT)
     {
         if (Cur->Next == NULL)
             break;
         Cur = Cur->Next;
     }
-    if (Cur->NumOfFilled == 3 && Cur->Next == NULL)
+    if (Cur->NumOfFilled == COUNT && Cur->Next == NULL)
     {
         Cur->Next = CreateList(Key);
         if (Cur->Next == NULL)

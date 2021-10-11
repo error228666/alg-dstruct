@@ -243,6 +243,25 @@ TEST(FindNextByKey, OutOfRange_return0)
 
 }
 
+TEST(FindNextByKey, NextKeyIsOutOfRange_return0)
+{
+	int NextKey;
+	list* L = (list*)malloc(sizeof(list));
+	ASSERT_NE(L, nullptr);
+
+
+	L->Array[0] = 1;
+	L->Array[1] = 2;
+	L->Array[2] = 3;
+	L->NumOfFilled = 3;
+	L->Next = NULL;
+
+	ASSERT_EQ(0, FindNextByKey(L, 3, &NextKey));
+
+	free(L);
+
+}
+
 
 TEST(DeleteByNumber, Default_return1)
 {
