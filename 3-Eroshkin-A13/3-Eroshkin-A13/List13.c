@@ -22,10 +22,17 @@ void DestoyList(list* L)
         free(Cur);
     }
 }
-int AddToList(list* L, int Key)
+int AddToList(list** L, int Key)
 {
-    list* Cur = L;
+    list* Cur = *L;
     list* New;
+    if (*L == NULL)
+    {
+        *L = CreateList(Key);
+        if (*L == NULL)
+            return 0;
+        return 1;
+    }
     while (Cur->NumOfFilled == 3)
     {
         if (Cur->Next == NULL)
@@ -118,7 +125,7 @@ int FindNextByKey(list* L, int Key, int* NextKey)
             {
                 if (LilCounter == Cur->NumOfFilled - 1)
                 {
-                    if (Cur->Next == 0)
+                    if (Cur->Next == NULL)
                         return 0;
                     else
                     {
@@ -142,9 +149,9 @@ int FindNextByKey(list* L, int Key, int* NextKey)
 
 
 
-int DeleteByNumber(list* L, int Number)
+int DeleteByNumber(list** L, int Number)
 {
-    list* Cur = L;
+    list* Cur = *L;
     list* Prev = NULL;
     list* Tmp = NULL;
     int LilCounter = 0;
@@ -173,7 +180,11 @@ int DeleteByNumber(list* L, int Number)
         if (Prev == NULL)
         {
             if (Cur->Next == NULL)
-                free(Cur);
+            {
+                free(*L);
+                *L = NULL;
+                return 1;
+            }
             else
             {
                 for (i = 0; i < Cur->Next->NumOfFilled; i++)
