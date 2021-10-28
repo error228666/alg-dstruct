@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "memallocator.h"
 
-#define TEST_BLOCK_COUNT 1000
 
 void* head = NULL;
 void* memory = NULL;
