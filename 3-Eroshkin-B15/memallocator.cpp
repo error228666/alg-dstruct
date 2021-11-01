@@ -4,7 +4,7 @@
 
 void* head = NULL;
 void* memory = NULL;
-int avaible_size = 0;
+int avaiblesize = 0;
 
 int myabs(int a)
 {
@@ -61,15 +61,15 @@ int meminit(void* pMemory, int size)
 	*rightsizegetting(d) = size;
 	head = d;
 	memory = pMemory;
-	avaible_size = size;
+	avaiblesize = size;
 	return size;
 }
 
 void* memalloc(int size)
 {
-	if (size < 1 || size > avaible_size - memgetblocksize())
+	if (size < 1 || size > avaiblesize - memgetblocksize())
 		return NULL;
-	int bestsize = avaible_size + 1;
+	int bestsize = avaiblesize + 1;
 	void* block = head;
 	int isfounded = 0;
 	void* bestblock = block;
@@ -153,7 +153,7 @@ void memfree(void* p)
 
 	if ((char*)newblock - 1 > (char*)memory)
 		leftblock = (void*)((char*)newblock - myabs(*((int*)newblock - 1)));
-	if((char*)newblock + myabs(*leftsizegetting(newblock)) < (char*)memory + avaible_size)
+	if((char*)newblock + myabs(*leftsizegetting(newblock)) < (char*)memory + avaiblesize)
 		rightblock = (void*)(rightsizegetting(newblock) + 1);
 	
 	if (leftblock != NULL)
@@ -164,7 +164,7 @@ void memfree(void* p)
 	
 	if (rightblock != NULL)
 	{
-		if (*leftsizegetting(rightblock) <= 0 && (char*)rightblock < (char*)memory + avaible_size)
+		if (*leftsizegetting(rightblock) <= 0 && (char*)rightblock < (char*)memory + avaiblesize)
 			rightblock = NULL;
 	}
 	
@@ -230,7 +230,7 @@ void memfree(void* p)
 void memdone() 
 {
 	void* block = memory;
-	while ((char*)block < (char*)memory + avaible_size) {
+	while ((char*)block < (char*)memory + avaiblesize) {
 		if (*leftsizegetting(block) < 0)
 			fprintf(stderr, " Memory leak at 0x%p\n", (char*)block + sizeof(int) + sizeof(void*));
 		block = (void*)((char*)block + myabs(*leftsizegetting(block)));
