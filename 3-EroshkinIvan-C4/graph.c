@@ -1,29 +1,4 @@
-//#include "graph.h"
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct
-{
-	int count;
-	int* neighbors;
-}list_of_adjacency;
-
-typedef struct list
-{
-	int data;
-	struct list* next;
-	struct list* prev;
-
-}list;
-
-typedef struct
-{
-	list* head;
-	list* tail;
-}queue;
-
-
+#include "graph.h"
 
 
 void errors_consider(int error)
@@ -261,7 +236,7 @@ void bfs(list_of_adjacency* l, int count_of_vertex, FILE *output_stream, int *er
 
 
 
-void main()
+void lab()
 {
 	int count_of_vertex, error;
 	list_of_adjacency* l = making_list(stdin, &count_of_vertex, &error);
