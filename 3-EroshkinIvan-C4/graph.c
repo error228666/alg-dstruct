@@ -25,15 +25,7 @@ void errors_consider(int error)
 	}
 }
 
-int comparator(const void* val1, const void* val2)
-{
-	if (*(int *)val1 == *(int*)val2)
-		return 0;
-	if (*(int*)val1 > *(int*)val2)
-		return 1;
-	else
-		return -1;
-}
+
 
 int push(queue* q, int data)
 {
@@ -42,28 +34,24 @@ int push(queue* q, int data)
 	list* new = (list*)malloc(sizeof(list));
 	if (new == NULL)
 		return 1;
-	
 	new->data = data;
-	new->prev = NULL;
-	new->next = q->head;
-	if (q->head != NULL)
-		q->head->prev = new;
-	q->head = new;
-	if (q->tail == NULL)
-		q->tail = new;
+	new->next = q->tail;
+	q->tail = new;
+	if (q->head == NULL)
+		q->head = new;
 	return 0;
 }
 
 int pop(queue* q, int* data)
 {
-	list* tmp;
+	list* tmp, *current;
 	if (q == NULL)
 		return 2;	
 
 	if (q->tail == NULL) // no elements in queue
 		return 3;
 	
-	*data = q->tail->data;
+	*data = q->head->data;
 	if (q->head == q->tail) // single element
 	{
 		tmp = q->head;
@@ -74,10 +62,11 @@ int pop(queue* q, int* data)
 	}
 	else
 	{
-		tmp = q->tail;
-		q->tail = q->tail->prev;
-		q->tail->next = NULL;
-		free(tmp);
+		current = q->tail;
+		while (current->next != q->head)
+			current = current->next;
+		q->head = current;
+		current->next = NULL;
 		return 0;
 	}
 
@@ -102,8 +91,10 @@ void destroy_list_of_adjacency(list_of_adjacency* l, int count_of_vertex)
 {
 	int i;
 	for (i = 0; i < count_of_vertex; i++)
-		free(l[i].neighbors);
-		
+	{
+		if (l[i].neighbors != NULL)
+			free(l[i].neighbors);
+	}
 	free(l);
 }
 
@@ -129,16 +120,10 @@ list_of_adjacency* making_list(FILE *stream, int *count_of_vertex, int *error)
 	}
 	while (fscanf(stream, "%d %d", &first_vertex, &second_vertex) != EOF)
 	{
-		
 		l[first_vertex].count++;
 		l[first_vertex].neighbors = (int *)realloc(l[first_vertex].neighbors, l[first_vertex].count * sizeof(int));
 		if (l[first_vertex].neighbors == NULL)
 		{
-			for (i = 0; i < *count_of_vertex; i++)
-			{
-				if (l[i].neighbors != NULL)
-					free(l[i].neighbors);
-			}
 			destroy_list_of_adjacency(l, *count_of_vertex);
 			*error = 1;
 			return NULL;
@@ -150,19 +135,12 @@ list_of_adjacency* making_list(FILE *stream, int *count_of_vertex, int *error)
 		l[second_vertex].neighbors = (int *)realloc(l[second_vertex].neighbors, l[second_vertex].count * sizeof(int));
 		if (l[second_vertex].neighbors == NULL)
 		{
-			for (i = 0; i < *count_of_vertex; i++)
-			{
-				if (l[i].neighbors != NULL)
-					free(l[i].neighbors);
-			}
 			destroy_list_of_adjacency(l, *count_of_vertex);
 			*error = 1;
 			return NULL;
 		}
 		l[second_vertex].neighbors[l[second_vertex].count - 1] = first_vertex;
 	}
-	for (i = 0; i < *count_of_vertex; i++)
-		qsort(l[i].neighbors, l[i].count, sizeof(int), comparator);
 	*error = 0;
 	return l;
 }
@@ -177,7 +155,7 @@ void bfs(list_of_adjacency* l, int count_of_vertex, FILE *output_stream, int *er
 	if (visited == NULL)
 	{
 		destroy_list_of_adjacency(l, count_of_vertex);
-		int* error = 1;
+		*error = 1;
 		return;
 	}
 	queue* q = (queue*)malloc(sizeof(queue));
@@ -254,5 +232,4 @@ void lab()
 	}
 
 }
-
 

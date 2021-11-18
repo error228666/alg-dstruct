@@ -19,7 +19,6 @@ typedef struct list
 {
 	int data;
 	struct list* next;
-	struct list* prev;
 
 }list;
 
@@ -38,7 +37,6 @@ void destroy_queue(queue* q);
 list_of_adjacency* making_list(FILE* stream, int* count_of_vertex, int* error);
 void destroy_list_of_adjacency(list_of_adjacency* l, int count_of_vertex);
 
-int comparator(const void* val1, const void* val2);
 
 void bfs(list_of_adjacency* l, int count_of_vertex, FILE* output_stream, int* error);
 
