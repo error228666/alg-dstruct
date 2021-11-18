@@ -101,6 +101,7 @@ void destroy_list_of_adjacency(list_of_adjacency* l, int count_of_vertex)
 list_of_adjacency* making_list(FILE *stream, int *count_of_vertex, int *error)
 { 
 	int i = 0;
+	int* pointer;
 	int first_vertex, second_vertex;
 	list_of_adjacency* l;
 
@@ -121,8 +122,10 @@ list_of_adjacency* making_list(FILE *stream, int *count_of_vertex, int *error)
 	while (fscanf(stream, "%d %d", &first_vertex, &second_vertex) != EOF)
 	{
 		l[first_vertex].count++;
-		l[first_vertex].neighbors = (int *)realloc(l[first_vertex].neighbors, l[first_vertex].count * sizeof(int));
-		if (l[first_vertex].neighbors == NULL)
+		pointer = (int*)realloc(l[first_vertex].neighbors, l[first_vertex].count * sizeof(int));
+		if (pointer != NULL)
+			l[first_vertex].neighbors = pointer;
+		else 
 		{
 			destroy_list_of_adjacency(l, *count_of_vertex);
 			*error = 1;
@@ -130,10 +133,12 @@ list_of_adjacency* making_list(FILE *stream, int *count_of_vertex, int *error)
 		}
 		l[first_vertex].neighbors[l[first_vertex].count - 1] = second_vertex;
 
-		
+
 		l[second_vertex].count++;
-		l[second_vertex].neighbors = (int *)realloc(l[second_vertex].neighbors, l[second_vertex].count * sizeof(int));
-		if (l[second_vertex].neighbors == NULL)
+		pointer = (int *)realloc(l[second_vertex].neighbors, l[second_vertex].count * sizeof(int));
+		if (pointer != NULL)
+			l[second_vertex].neighbors = pointer;
+		else
 		{
 			destroy_list_of_adjacency(l, *count_of_vertex);
 			*error = 1;
