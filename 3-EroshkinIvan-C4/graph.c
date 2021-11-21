@@ -34,11 +34,21 @@ int push(queue* q, int data)
 	list* new = (list*)malloc(sizeof(list));
 	if (new == NULL)
 		return 1;
+
 	new->data = data;
-	new->next = q->tail;
-	q->tail = new;
+	new->next = NULL;
+
+	
 	if (q->head == NULL)
+	{
 		q->head = new;
+		q->tail = new;
+	}
+	else
+	{
+		q->tail->next = new;
+		q->tail = q->tail->next;
+	}
 	return 0;
 }
 
@@ -52,23 +62,16 @@ int pop(queue* q, int* data)
 		return 3;
 	
 	*data = q->head->data;
-	if (q->head == q->tail) // single element
-	{
-		tmp = q->head;
-		q->head = NULL;
+	tmp = q->head;
+	q->head = q->head->next;
+	free(tmp);
+
+	if (q->head == NULL)
 		q->tail = NULL;
-		free(tmp);
-		return 0;
-	}
-	else
-	{
-		current = q->tail;
-		while (current->next != q->head)
-			current = current->next;
-		q->head = current;
-		current->next = NULL;
-		return 0;
-	}
+
+	return 0;
+
+
 
 }
 
@@ -159,14 +162,12 @@ void bfs(list_of_adjacency* l, int count_of_vertex, FILE *output_stream, int *er
 	int* visited = (int *)malloc(sizeof(int) * count_of_vertex);
 	if (visited == NULL)
 	{
-		destroy_list_of_adjacency(l, count_of_vertex);
 		*error = 1;
 		return;
 	}
 	queue* q = (queue*)malloc(sizeof(queue));
 	if (q == NULL)
 	{
-		destroy_list_of_adjacency(l, count_of_vertex);
 		free(visited);
 		*error = 1;
 		return;

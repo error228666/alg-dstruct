@@ -5,13 +5,14 @@ Proceesor	AMD Ryzen 5 3500U with Radeon Vega Mobile Gfx, 2100 MHertz, cores: 4, 
 RAM	8,00 ца
 
 Test results:
-Time 49229 ms
-Memory ~ 125 mb at peak
+Time 100 s
+Memory ~ 256 mb at peak
 */
 TEST(StressTest, MakingFiles) 
 {
+	int x, y;
 	int count_of_vertex = 1000000;
-	int iters = 10000000;
+	int iters = 100;
 	FILE* input = fopen("input.txt", "w");
 	if (input == NULL)
 	{
@@ -20,10 +21,19 @@ TEST(StressTest, MakingFiles)
 	
 	}
 	fprintf(input, "%d\n", count_of_vertex);
-	fprintf(input, "%d %d\n", 0, rand() % count_of_vertex);
-	for (int i = 0; i < iters; i++)
+	fprintf(input, "0 1\n");
+	for (int j = 0; j < count_of_vertex; j += 2)
 	{
-		fprintf(input, "%d %d\n", rand() % count_of_vertex, rand() % count_of_vertex);
+
+		for (int i = 1; i < iters; i += 2)
+		{
+			if (j + i > count_of_vertex)
+				y = j - i;
+			else
+				y = j + i;
+			
+			fprintf(input, "%d %d\n", j, y);
+		}
 	}
 	fclose(input);
 	FILE* output = fopen("output.txt", "w");
@@ -69,6 +79,7 @@ TEST(StressTest, Testing)
 		fclose(input);
 		ASSERT_FALSE(error);
 	}
+	destroy_list_of_adjacency(l, count_of_vertex);
 	fclose(output);
 	fclose(input);
 }
