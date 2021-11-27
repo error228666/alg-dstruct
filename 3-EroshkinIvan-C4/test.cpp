@@ -21,7 +21,6 @@ TEST(StressTest, MakingFiles)
 	
 	}
 	fprintf(input, "%d\n", count_of_vertex);
-	fprintf(input, "0 1\n");
 	for (int j = 0; j < count_of_vertex; j += 2)
 	{
 

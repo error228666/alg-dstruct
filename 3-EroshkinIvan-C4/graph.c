@@ -236,6 +236,7 @@ void lab()
 		errors_consider(error);
 		return;
 	}
+	destroy_list_of_adjacency(l);
 
 }
 
