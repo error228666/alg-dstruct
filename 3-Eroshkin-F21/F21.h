@@ -10,7 +10,6 @@ extern "C" {
 
 	typedef struct tree {
 		int key;
-		int number;
 		int count_of_children;
 		struct tree* less;
 		struct tree* more;
@@ -18,7 +17,6 @@ extern "C" {
 	}tree;
 
 	tree* create_tree(int key);
-	void update_numbers(tree* t);
 	void add_to_tree(tree* t, int key);
 	void print_tree(tree* t, int n);
 	void destroy_tree(tree* t);

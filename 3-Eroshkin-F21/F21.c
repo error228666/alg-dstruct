@@ -10,7 +10,6 @@ tree *create_tree(int key)
 		return NULL;
 	}
 	res->key = key;
-	res->number = 1;
 	res->less = NULL;
 	res->more = NULL;
 	res->parent = NULL;
@@ -18,15 +17,7 @@ tree *create_tree(int key)
 	return res;
 }
 
-void update_numbers(tree* t)
-{
-	if (t == NULL)
-		return;
-	t->number++;
-	update_numbers(t->less);
-	update_numbers(t->more);
 
-}
 
 void add_to_tree(tree* t, int key)
 {
@@ -42,7 +33,6 @@ void add_to_tree(tree* t, int key)
 		return;
 	}
 	new->key = key;
-	new->number = 1;
 	new->count_of_children = 0;
 	new->less = NULL;
 	new->more = NULL;
@@ -59,7 +49,6 @@ void add_to_tree(tree* t, int key)
 			ptr = ptr->more;
 	}
 
-	update_numbers(t);
 	new->parent = parent;
 	if (key < parent->key)
 		parent->less = new;

@@ -1,28 +1,6 @@
 #include "pch.h"
 #include "F21.h"
 
-TEST(AddingTests, UpdateNumbersTest) 
-{
-	tree* t = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t, nullptr);
-	t->parent = NULL;
-	t->key = 1;
-	t->count_of_children = 1;
-	t->number = 1;
-	t->less = NULL;
-	t->more = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t->more, nullptr);
-	t->more->parent = t;
-	t->more->more = NULL;
-	t->more->less = NULL;
-	t->more->key = 2;
-	t->more->number = 2;
-	update_numbers(t);
-	ASSERT_EQ(t->number, 2);
-	ASSERT_EQ(t->more->number, 3);
-	free(t->more);
-	free(t);
-}
 
 TEST(AddingTests, AddingMore)
 {
@@ -31,12 +9,10 @@ TEST(AddingTests, AddingMore)
 	t->parent = NULL;
 	t->key = 2;
 	t->count_of_children = 0;
-	t->number = 1;
 	t->less = NULL;
 	t->more = NULL;
 	add_to_tree(t, 3);
 	ASSERT_EQ(t->more->key, 3);
-	ASSERT_EQ(t->more->number, 1);
 	ASSERT_EQ(t->more->parent, t);
 	ASSERT_EQ(t->more->more, nullptr);
 	ASSERT_EQ(t->more->less, nullptr);
@@ -55,12 +31,10 @@ TEST(AddingTests, AddingLess)
 	t->parent = NULL;
 	t->key = 2;
 	t->count_of_children = 0;
-	t->number = 1;
 	t->less = NULL;
 	t->more = NULL;
 	add_to_tree(t, 1);
 	ASSERT_EQ(t->less->key, 1);
-	ASSERT_EQ(t->less->number, 1);
 	ASSERT_EQ(t->less->parent, t);
 	ASSERT_EQ(t->less->more, nullptr);
 	ASSERT_EQ(t->less->less, nullptr);
@@ -77,12 +51,10 @@ TEST(AddingTests, AddingSame)
 	t->parent = NULL;
 	t->key = 2;
 	t->count_of_children = 0;
-	t->number = 1;
 	t->less = NULL;
 	t->more = NULL;
 	add_to_tree(t, 2);
 	ASSERT_EQ(t->more->key, 2);
-	ASSERT_EQ(t->more->number, 1);
 	ASSERT_EQ(t->more->parent, t);
 	ASSERT_EQ(t->more->more, nullptr);
 	ASSERT_EQ(t->more->less, nullptr);
@@ -100,35 +72,46 @@ TEST(FindOrdinalTest, Root)
 	t->parent = NULL;
 	t->key = 3;
 	t->count_of_children = 3;
-	t->number = 1;
 	t->less = NULL;
 
 	tree* ptr = (tree*)malloc(sizeof(tree));
-	t->more = ptr;
-	ASSERT_NE(t->more, nullptr);
+	t->more = ptr; 
+	if (t->more == NULL)
+	{
+		free(t);
+		ASSERT_NE(t->more, nullptr);
+	}
 	t->more->parent = t;
 	t->more->more = NULL;
 	t->more->less = NULL;
 	t->more->key = 4;
-	t->more->number = 2;
 	t->more->count_of_children = 0;
 
 	t->less = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t->less, nullptr);
+	if (t->less == NULL)
+	{
+		free(t);
+		free(t->more);
+		ASSERT_NE(t->less, nullptr);
+	}
 	t->less->parent = t;
 	t->less->count_of_children = 1;
 	t->less->less = NULL;
 	t->less->key = 1;
-	t->less->number = 3;
 
 	ptr = (tree*)malloc(sizeof(tree));
 	t->less->more = ptr;
-	ASSERT_NE(t->less->more, nullptr);
+	if (t->less->more == NULL)
+	{
+		free(t);
+		free(t->less);
+		free(t->more);
+		ASSERT_NE(t->less->more, nullptr);
+	}
 	t->less->more->parent = t->less;
 	t->less->more->more = NULL;
 	t->less->more->less = NULL;
 	t->less->more->key = 2;
-	t->less->more->number = 4;
 	t->less->more->count_of_children = 0;
 
 
@@ -149,35 +132,46 @@ TEST(FindOrdinalTest, Default)
 	t->parent = NULL;
 	t->key = 3;
 	t->count_of_children = 3;
-	t->number = 1;
 	t->less = NULL;
 
 	tree* ptr = (tree*)malloc(sizeof(tree));
 	t->more = ptr;
-	ASSERT_NE(t->more, nullptr);
+	if (t->more == NULL)
+	{
+		free(t);
+		ASSERT_NE(t->more, nullptr);
+	}
 	t->more->parent = t;
 	t->more->more = NULL;
 	t->more->less = NULL;
 	t->more->key = 4;
-	t->more->number = 2;
 	t->more->count_of_children = 0;
 
 	t->less = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t->less, nullptr);
+	if (t->less == NULL)
+	{
+		free(t);
+		free(t->more);
+		ASSERT_NE(t->less, nullptr);
+	}
 	t->less->parent = t;
 	t->less->count_of_children = 1;
 	t->less->less = NULL;
 	t->less->key = 1;
-	t->less->number = 3;
 
 	ptr = (tree*)malloc(sizeof(tree));
 	t->less->more = ptr;
-	ASSERT_NE(t->less->more, nullptr);
+	if (t->less->more == NULL)
+	{
+		free(t);
+		free(t->less);
+		free(t->more);
+		ASSERT_NE(t->less->more, nullptr);
+	}
 	t->less->more->parent = t->less;
 	t->less->more->more = NULL;
 	t->less->more->less = NULL;
 	t->less->more->key = 2;
-	t->less->more->number = 4;
 	t->less->more->count_of_children = 0;
 
 	t->less->more = ptr;
@@ -199,35 +193,46 @@ TEST(FindKMin, Default)
 	t->parent = NULL;
 	t->key = 3;
 	t->count_of_children = 3;
-	t->number = 1;
 	t->less = NULL;
 
 	tree* ptr = (tree*)malloc(sizeof(tree));
 	t->more = ptr;
-	ASSERT_NE(t->more, nullptr);
+	if (t->more == NULL)
+	{
+		free(t);
+		ASSERT_NE(t->more, nullptr);
+	}
 	t->more->parent = t;
 	t->more->more = NULL;
 	t->more->less = NULL;
 	t->more->key = 4;
-	t->more->number = 2;
 	t->more->count_of_children = 0;
 
 	t->less = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t->less, nullptr);
+	if (t->less == NULL)
+	{
+		free(t);
+		free(t->more);
+		ASSERT_NE(t->less, nullptr);
+	}
 	t->less->parent = t;
 	t->less->count_of_children = 1;
 	t->less->less = NULL;
 	t->less->key = 1;
-	t->less->number = 3;
 
 	ptr = (tree*)malloc(sizeof(tree));
 	t->less->more = ptr;
-	ASSERT_NE(t->less->more, nullptr);
+	if (t->less->more == NULL)
+	{
+		free(t);
+		free(t->less);
+		free(t->more);
+		ASSERT_NE(t->less->more, nullptr);
+	}
 	t->less->more->parent = t->less;
 	t->less->more->more = NULL;
 	t->less->more->less = NULL;
 	t->less->more->key = 2;
-	t->less->more->number = 4;
 	t->less->more->count_of_children = 0;
 
 	ASSERT_EQ(t->less->more, find_k_min(t, 2));
@@ -246,34 +251,46 @@ TEST(FindKLessTests, ZeroK)
 	t->parent = NULL;
 	t->key = 3;
 	t->count_of_children = 3;
-	t->number = 1;
 	t->less = NULL;
 
 	tree* ptr = (tree*)malloc(sizeof(tree));
 	t->more = ptr;
-	ASSERT_NE(t->more, nullptr);
+	if (t->more == NULL)
+	{
+		free(t);
+		ASSERT_NE(t->more, nullptr);
+	}
 	t->more->parent = t;
 	t->more->more = NULL;
 	t->more->less = NULL;
 	t->more->key = 4;
-	t->more->number = 2;
 	t->more->count_of_children = 0;
 
 	t->less = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t->less, nullptr);
+	if (t->less == NULL)
+	{
+		free(t);
+		free(t->more);
+		ASSERT_NE(t->more, nullptr);
+	}
 	t->less->parent = t;
 	t->less->count_of_children = 1;
 	t->less->less = NULL;
 	t->less->key = 1;
-	t->less->number = 3;
 
 	t->less->more = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t->less->more, nullptr);
+	if (t->less->more == NULL)
+	{
+		free(t);
+		free(t->more);
+		free(t->less);
+		ASSERT_NE(t->less->more, nullptr);
+	}
+	
 	t->less->more->parent = t->less;
 	t->less->more->more = NULL;
 	t->less->more->less = NULL;
 	t->less->more->key = 2;
-	t->less->more->number = 4;
 	t->less->more->count_of_children = 0;
 
 	int err;
@@ -294,35 +311,46 @@ TEST(FindKLessTests, TooBigK)
 	t->parent = NULL;
 	t->key = 3;
 	t->count_of_children = 3;
-	t->number = 1;
 	t->less = NULL;
 
 	tree* ptr = (tree*)malloc(sizeof(tree));
 	t->more = ptr;
-	ASSERT_NE(t->more, nullptr);
+	if (ptr == NULL)
+	{
+		free(t);
+		ASSERT_NE(ptr, nullptr);
+	}
 	t->more->parent = t;
 	t->more->more = NULL;
 	t->more->less = NULL;
 	t->more->key = 4;
-	t->more->number = 2;
 	t->more->count_of_children = 0;
 	t->less = (tree*)malloc(sizeof(tree));
 
-	ASSERT_NE(t->less, nullptr);
+	if (t->less == NULL)
+	{
+		free(t);
+		free(t->more);
+		ASSERT_NE(t->less, nullptr);
+	}
 	t->less->parent = t;
 	t->less->count_of_children = 1;
 	t->less->less = NULL;
 	t->less->key = 1;
-	t->less->number = 3;
 
 	ptr = (tree*)malloc(sizeof(tree));
 	t->less->more = ptr;
-	ASSERT_NE(t->less->more, nullptr);
+	if (t->less->more == NULL)
+	{
+		free(t);
+		free(t->less);
+		free(t->more);
+		ASSERT_NE(t->less->more, nullptr);
+	}
 	t->less->more->parent = t->less;
 	t->less->more->more = NULL;
 	t->less->more->less = NULL;
 	t->less->more->key = 2;
-	t->less->more->number = 4;
 	t->less->more->count_of_children = 0;
 
 	int err;
@@ -337,46 +365,123 @@ TEST(FindKLessTests, TooBigK)
 	free(t);
 }
 
-TEST(FindKLessTests, Default)
+TEST(FindKLessTests, Root)
 {
 	tree* t = (tree*)malloc(sizeof(tree));
 	ASSERT_NE(t, nullptr);
 	t->parent = NULL;
 	t->key = 3;
 	t->count_of_children = 3;
-	t->number = 1;
 	t->less = NULL;
+
 	tree* ptr = (tree*)malloc(sizeof(tree));
 	t->more = ptr;
-	ASSERT_NE(t->more, nullptr);
+	if (t->more == NULL)
+	{
+		free(t);
+		ASSERT_NE(t->more, nullptr);
+	}
 	t->more->parent = t;
 	t->more->more = NULL;
 	t->more->less = NULL;
 	t->more->key = 4;
-	t->more->number = 2;
 	t->more->count_of_children = 0;
+	
 	t->less = (tree*)malloc(sizeof(tree));
-	ASSERT_NE(t->less, nullptr);
+	if (t->less == NULL)
+	{
+		free(t);
+		free(t->more);
+		ASSERT_NE(t->less, nullptr);
+	}
 	t->less->parent = t;
 	t->less->count_of_children = 1;
 	t->less->less = NULL;
 	t->less->key = 1;
-	t->less->number = 3;
 
 	ptr = (tree*)malloc(sizeof(tree));
-	t->less->more = ptr;
-	ASSERT_NE(t->less->more, nullptr);
+	t->less->more = ptr; 
+	if (t->less->more == NULL)
+	{
+		free(t);
+		free(t->less);
+		free(t->more);
+		ASSERT_NE(t->less->more, nullptr);
+	}
 	t->less->more->parent = t->less;
 	t->less->more->more = NULL;
 	t->less->more->less = NULL;
 	t->less->more->key = 2;
-	t->less->more->number = 4;
 	t->less->more->count_of_children = 0;
 
 	t->less->more = ptr;
 	int err;
 
 	ASSERT_EQ(t->less->more, find_k_less(t, 1, &err));
+	ASSERT_EQ(err, 0);
+
+
+	free(t->less->more);
+	free(t->less);
+	free(t->more);
+	free(t);
+}
+
+
+
+TEST(FindKLessTests, NotRoot)
+{
+	tree* t = (tree*)malloc(sizeof(tree));
+	ASSERT_NE(t, nullptr);
+	t->parent = NULL;
+	t->key = 3;
+	t->count_of_children = 3;
+	t->less = NULL;
+
+	tree* ptr = (tree*)malloc(sizeof(tree));
+	t->more = ptr;
+	if (t->more == NULL)
+	{
+		free(t);
+		ASSERT_NE(t->more, nullptr);
+	}
+	t->more->parent = t;
+	t->more->more = NULL;
+	t->more->less = NULL;
+	t->more->key = 4;
+	t->more->count_of_children = 0;
+
+	t->less = (tree*)malloc(sizeof(tree));
+	if (t->less == NULL)
+	{
+		free(t);
+		free(t->more);
+		ASSERT_NE(t->less, nullptr);
+	}
+	t->less->parent = t;
+	t->less->count_of_children = 1;
+	t->less->less = NULL;
+	t->less->key = 1;
+
+	ptr = (tree*)malloc(sizeof(tree));
+	t->less->more = ptr;
+	if (t->less->more == NULL)
+	{
+		free(t);
+		free(t->less);
+		free(t->more);
+		ASSERT_NE(t->less->more, nullptr);
+	}
+	t->less->more->parent = t->less;
+	t->less->more->more = NULL;
+	t->less->more->less = NULL;
+	t->less->more->key = 2;
+	t->less->more->count_of_children = 0;
+
+	t->less->more = ptr;
+	int err;
+
+	ASSERT_EQ(t->less, find_k_less(t->more, 3, &err));
 	ASSERT_EQ(err, 0);
 
 
