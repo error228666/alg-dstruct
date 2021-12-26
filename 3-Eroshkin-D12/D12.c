@@ -117,7 +117,12 @@ void lab(char* input_name, char* output_name)
     }
     int** matrix = create_matrix(n);
     if (matrix == NULL)
+    {
+        free(vertex_color);
+        free(vec_of_vertex);
+        free(colors);
         return;
+    }
 
     
     while (fscanf(input, "%i %i", &x, &y) != EOF)

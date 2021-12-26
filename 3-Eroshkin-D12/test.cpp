@@ -172,7 +172,7 @@ TEST(LabTests, PossibleToPaint3)
 	int myres[7] = { 1, 3, 1, 2, 2, 2, 1 };
 	FILE* output = fopen("output.txt", "r");
 	ASSERT_TRUE(output);
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		fscanf(output, "%i ", &res[i]);
 		ASSERT_EQ(res[i], myres[i]);
