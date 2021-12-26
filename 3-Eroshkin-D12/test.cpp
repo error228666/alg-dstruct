@@ -41,13 +41,7 @@ TEST(StressTest, MakeFile)
 
 TEST(StressTest, Testing)
 {
-	FILE* input = fopen("input.txt", "r");
-	ASSERT_TRUE(input);
-	FILE* output = fopen("output.txt", "w");
-	ASSERT_TRUE(output);
-	lab(input, output);
-	fclose(input);
-	fclose(output);
+	lab("input.txt", "output.txt");
 
 }
 
@@ -95,7 +89,7 @@ TEST(VertexComparatorTests, TestingCompareByDegree)
 	ASSERT_GT(0, vertex_comparator(&b, &a));
 }
 
-TEST(VertexComparatorTests, SameVertexes)
+TEST(VertexComparatorTests, Same)
 {
 	vertex a, b;
 	a.is_colored = 0;
@@ -108,44 +102,33 @@ TEST(VertexComparatorTests, SameVertexes)
 }
 
 
-TEST(LabTests, ImposibleToPaint)
+TEST(LabTests, ImpossibleToPaint)
 {
 	FILE* input = fopen("input.txt", "w");
 	
 	fprintf(input, "3 2\n1 3\n1 2\n2 3");
 
 	fclose(input);
-	input = fopen("input.txt", "r");
-	ASSERT_TRUE(input);
-	FILE* output = fopen("output.txt", "w");
-	ASSERT_TRUE(output);
-	lab(input, output);
-	fclose(input);
-	fclose(output);
+	
+	lab("input.txt", "output.txt");
 	int res;
-	output = fopen("output.txt", "r");
+	FILE *output = fopen("output.txt", "r");
 	ASSERT_TRUE(output);
 	fscanf(output, "%i", &res);
 	ASSERT_EQ(0, res);
 	fclose(output);
 }
 
-TEST(LabTests, PosibleToPaint1)
+TEST(LabTests, PossibleToPaint1)
 {
 	FILE* input = fopen("input.txt", "w");
 	ASSERT_TRUE(input);
 	fprintf(input, "3 3\n2 3\n1 3\n1 2");
 	fclose(input);
-	input = fopen("input.txt", "r");
-	ASSERT_TRUE(input);
-	FILE* output = fopen("output.txt", "w");
-	ASSERT_TRUE(output);
-	lab(input, output);
-	fclose(input);
-	fclose(output);
+	lab("input.txt", "output.txt");
 	int res[3];
 	int myres[3] = { 1, 2, 3 };
-	output = fopen("output.txt", "r");
+	FILE *output = fopen("output.txt", "r");
 	ASSERT_TRUE(output);
 	fscanf(output, "%i ", &res[0]);
 	fscanf(output, "%i ", &res[1]);
@@ -155,4 +138,45 @@ TEST(LabTests, PosibleToPaint1)
 	ASSERT_EQ(res[1], myres[1]);
 	ASSERT_EQ(res[2], myres[2]);
 	
+}
+
+TEST(LabTests, PossibleToPaint2)
+{
+	FILE* input = fopen("input.txt", "w");
+	ASSERT_TRUE(input);
+	fprintf(input, "8 3\n1 2\n1 4\n2 3\n2 5\n3 4\n4 5\n4 6\n4 7\n7 8\n6 8\n6 3");
+	fclose(input);
+	lab("input.txt", "output.txt");
+	int res[8];
+	int myres[8] = { 2, 1, 3, 1, 2, 2, 2, 1 };
+	FILE* output = fopen("output.txt", "r");
+	ASSERT_TRUE(output);
+	for (int i = 0; i < 8; i++)
+	{
+		fscanf(output, "%i ", &res[i]);
+		ASSERT_EQ(res[i], myres[i]);
+	}
+	fclose(output);
+
+}
+
+
+TEST(LabTests, PossibleToPaint3)
+{
+	FILE* input = fopen("input.txt", "w");
+	ASSERT_TRUE(input);
+	fprintf(input, "7 3\n1 2\n1 6\n1 4\n2 4\n4 3\n2 3\n3 5\n6 7\n3 6\n");
+	fclose(input);
+	lab("input.txt", "output.txt");
+	int res[7];
+	int myres[7] = { 1, 3, 1, 2, 2, 2, 1 };
+	FILE* output = fopen("output.txt", "r");
+	ASSERT_TRUE(output);
+	for (int i = 0; i < 8; i++)
+	{
+		fscanf(output, "%i ", &res[i]);
+		ASSERT_EQ(res[i], myres[i]);
+	}
+	fclose(output);
+
 }

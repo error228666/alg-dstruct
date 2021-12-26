@@ -24,7 +24,7 @@ extern "C" {
 		int num;
 		int count;
 	}color;
-	void lab(FILE* input, FILE* output);
+	void lab(char* input_name, char* output_name);
 	int color_comparator(const void* val1, const void* val2);
 	int color_comparator1(color* val1, color* val2);
 	int vertex_comparator(const void* val1, const void* val2);

@@ -1,9 +1,4 @@
 #include "D12.h"
-void make_file()
-{
-    
-}
-
 
 
 int** create_matrix(int n)
@@ -69,10 +64,17 @@ int color_comparator(const void* val1, const void* val2)
     return color_comparator1((color*)val1, (color*)val2);
 }
 
-void lab(FILE* input, FILE* output)
+void lab(char* input_name, char* output_name)
 {
 
     int n, k, x, y, flag, finded_color;
+    FILE* input = fopen(input_name, "r");
+    FILE* output = fopen(output_name, "w");
+    if (output == NULL || input == NULL)
+    {
+        printf("file error");
+        return;
+    }
     int count_of_colors = 1;
     int count_of_colored = 0;
     int output_type = 1;
@@ -114,6 +116,8 @@ void lab(FILE* input, FILE* output)
         vec_of_vertex[i].is_colored = 0;
     }
     int** matrix = create_matrix(n);
+    if (matrix == NULL)
+        return;
 
     
     while (fscanf(input, "%i %i", &x, &y) != EOF)
@@ -177,53 +181,53 @@ void lab(FILE* input, FILE* output)
                 return;
             }
         }
-    vertex_color[vec_of_vertex[n - 1].num] = finded_color;
+        vertex_color[vec_of_vertex[n - 1].num] = finded_color;
 
-    count_of_colored++;
+        count_of_colored++;
 
-    for (int i = 0; i < n; i++) // adding finded collor to banned of neigbours
-    {
-        if (matrix[vec_of_vertex[n - 1].num][i] == 1)
+        for (int i = 0; i < n; i++) // adding finded collor to banned of neigbours
         {
-            for (int j = count_of_colored - 1; j < n - 1; j++)
+            if (matrix[vec_of_vertex[n - 1].num][i] == 1)
             {
-                if (vec_of_vertex[j].num == i)
+                for (int j = count_of_colored - 1; j < n - 1; j++)
                 {
-                    vec_of_vertex[j].count_of_colors++;
-                    value1 = (int*)realloc(vec_of_vertex[j].colors, sizeof(int) * vec_of_vertex[j].count_of_colors);
-                    if (value1 != NULL)
+                    if (vec_of_vertex[j].num == i)
                     {
-                        vec_of_vertex[j].colors = value1;
-                        vec_of_vertex[j].colors[vec_of_vertex[j].count_of_colors - 1] = finded_color;
-                    }
-                    else
-                    {
-                        free(vertex_color);
-                        free(colors);
-                        for (int i = 0; i < n; i++)
+                        vec_of_vertex[j].count_of_colors++;
+                        value1 = (int*)realloc(vec_of_vertex[j].colors, sizeof(int) * vec_of_vertex[j].count_of_colors);
+                        if (value1 != NULL)
                         {
-                            free(vec_of_vertex[i].colors);
-                            free(matrix[i]);
+                            vec_of_vertex[j].colors = value1;
+                            vec_of_vertex[j].colors[vec_of_vertex[j].count_of_colors - 1] = finded_color;
                         }
-                        free(matrix);
-                        free(vec_of_vertex);
-                        printf("memory error4");
-                        return;
+                        else
+                        {
+                            free(vertex_color);
+                            free(colors);
+                            for (int i = 0; i < n; i++)
+                            {
+                                free(vec_of_vertex[i].colors);
+                                free(matrix[i]);
+                            }
+                            free(matrix);
+                            free(vec_of_vertex);
+                            printf("memory error4");
+                            return;
+                        }
                     }
                 }
             }
         }
-    }
-    for (int i = 0; i < n; i++)
-    {
-        matrix[i][vec_of_vertex[n - 1].num] = 0;
-        matrix[vec_of_vertex[n - 1].num][i] = 0;
-    }
+        for (int i = 0; i < n; i++)
+        {
+            matrix[i][vec_of_vertex[n - 1].num] = 0;
+            matrix[vec_of_vertex[n - 1].num][i] = 0;
+        }
     
-    vec_of_vertex[n - 1].is_colored = 1;
-    qsort(vec_of_vertex, n, sizeof(vertex), vertex_comparator);
+        vec_of_vertex[n - 1].is_colored = 1;
+        qsort(vec_of_vertex, n, sizeof(vertex), vertex_comparator);
     
-    qsort(colors, count_of_colors, sizeof(color), color_comparator);
+        qsort(colors, count_of_colors, sizeof(color), color_comparator);
 
 
     }
@@ -245,19 +249,7 @@ void lab(FILE* input, FILE* output)
     }
     free(matrix);
     free(vec_of_vertex);
-
-}
-/*
-int main()
-{
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
-    _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
-    //int* check = malloc(sizeof(int) * 100);
-    FILE* input = fopen("input.txt", "r");
-    FILE* output = fopen("output.txt", "w");
-    lab(input, output);
     fclose(input);
     fclose(output);
 
-}*/
+}
