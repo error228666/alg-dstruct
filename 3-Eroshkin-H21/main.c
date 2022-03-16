@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TRUE 1
-#define FALSE 0
 typedef enum { RED, BLACK } Color;
 
 typedef struct RBTree
