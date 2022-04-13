@@ -1,8 +1,11 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
+#define TRUE 1
+#define FALSE 0
 typedef enum { RED, BLACK } Color;
 
 typedef struct RBTree
@@ -19,7 +22,8 @@ static RBTree* NIL = NULL;
 
 void init_tree(RBTree** node)
 {
-    if (NIL == NULL) {
+    if (NIL == NULL)
+    {
         NIL = (RBTree*)malloc(sizeof(RBTree));
 
         if (NIL == NULL)
@@ -53,7 +57,7 @@ void rotate_left(RBTree** node, RBTree* cur)
             cur->parent->right = ptr;
     }
     else
-        (*node) = ptr;
+        *node = ptr;
 
     ptr->left = cur;
 
@@ -194,7 +198,8 @@ void fix_after_deleting(RBTree** tree_p, RBTree* node)
         {
             RBTree* cur = node->parent->right;
 
-            if (cur->color == RED) {
+            if (cur->color == RED) 
+            {
                 cur->color = BLACK;
                 node->parent->color = RED;
                 rotate_left(tree_p, node->parent);
@@ -230,11 +235,12 @@ void fix_after_deleting(RBTree** tree_p, RBTree* node)
             continue;
         }
         else
+        {
             if (node->parent->left != NIL)
             {
                 RBTree* cur = node->parent->left;
 
-                if (cur->color == RED) 
+                if (cur->color == RED)
                 {
                     cur->color = BLACK;
                     node->parent->color = RED;
@@ -242,12 +248,12 @@ void fix_after_deleting(RBTree** tree_p, RBTree* node)
                     cur = node->parent->left;
                 }
 
-                if (cur->left != NIL && cur->right != NIL && cur->right->color == BLACK && cur->left->color == BLACK) 
+                if (cur->left != NIL && cur->right != NIL && cur->right->color == BLACK && cur->left->color == BLACK)
                 {
                     cur->color = RED;
                     node = node->parent;
                 }
-                else 
+                else
                 {
 
                     if (cur->left != NIL && cur->right != NIL && cur->left->color == BLACK)
@@ -258,7 +264,7 @@ void fix_after_deleting(RBTree** tree_p, RBTree* node)
                         cur = node->parent->left;
                     }
 
-                    if (cur->left != NIL) 
+                    if (cur->left != NIL)
                     {
                         cur->color = node->parent->color;
                         node->parent->color = BLACK;
@@ -269,6 +275,7 @@ void fix_after_deleting(RBTree** tree_p, RBTree* node)
                 }
                 continue;
             }
+        }
         break;
     }
 
@@ -308,7 +315,7 @@ void delete_from_rbt(RBTree** tree_p, int data)
     RBTree* swap_child;
 
     if (swap->left != NIL)
-        swap_child = swap->left;
+        swap_child = swap->left;        
     else
         swap_child = swap->right;
 
@@ -322,9 +329,11 @@ void delete_from_rbt(RBTree** tree_p, int data)
         else
             swap->parent->right = swap_child;
     }
-    else
-        tree->parent = swap_child;
+    //else
+     //    tree->parent = swap_child;
 
+   
+    
     if (swap != del_node)
         del_node->data = swap->data;
 
@@ -332,37 +341,17 @@ void delete_from_rbt(RBTree** tree_p, int data)
         fix_after_deleting(tree_p, swap_child);
 
     if (swap == tree)
-    {
         *tree_p = swap_child;
-    }
-
+    
     if (swap != NIL)
         free(swap);
 }
 
-void merge_pass(RBTree** tree, RBTree* node) 
-{
-    if (node == NIL)
-        return;
-
-    merge_pass(tree, node->left);
-    insert_into_rbt(tree, node->data);
-    merge_pass(tree, node->right);
-}
-
-RBTree* merge(RBTree* tree1, RBTree* tree2, int data) 
-{
-    RBTree* merge_tree;
-
-    merge_pass(&merge_tree, tree1);
-    merge_pass(&merge_tree, tree2);
-    insert_into_rbt(&merge_tree, data);
-    return merge_tree;
-}
 
 int search_tree(RBTree* tree, int val)
 {
-    while (tree != NIL) {
+    while (tree != NIL)
+    {
         if (tree->data < val)
             tree = tree->right;
         else
@@ -371,28 +360,137 @@ int search_tree(RBTree* tree, int val)
             else
                 return 1;
     }
-
     return 0;
 }
 
 
 
+void print_tree(RBTree* node, int node_number)
+{
+    int i;
+
+    if (node != NIL) {
+        print_tree(node->right, node_number + 1);
+
+        for (i = 0; i < node_number; i++)
+            printf("    ");
+
+        if (node->color == RED)
+            printf("\033[41m%4d\033[0m", node->data);
+        else
+            printf("%4d", node->data);
+
+        print_tree(node->left, node_number + 1);
+    }
+    else
+        printf("\n");
+}
 
 
 void delete_tree(RBTree* node)
 {
     if (node != NIL) 
     {
-        delete_tree(node->left);
-        delete_tree(node->right);
+        if(node->left != NIL)
+            delete_tree(node->left);
+        if(node->right != NIL)
+            delete_tree(node->right);
         free(node);
     }
 }
 
+RBTree* node(int k, Color color, RBTree* left, RBTree* right)
+{
+    RBTree* result = (RBTree*)malloc(sizeof(RBTree));
+    result->data = k;
+    result->color = color;
+    result->left = left;
+    result->right = right;
+    result->parent = NIL;
+    left->parent = result;
+    right->parent = result;
+    return result;
+}
+
+int bh_of_rbtree(RBTree* t)
+{
+    int result = 0;
+    while (t != NIL)
+    {
+        if (t->color == BLACK)
+            result++;
+        t = t->left;
+    }
+    return result;
+}
+
+
+
+RBTree* join_to_r(RBTree* t1, RBTree* t2, int k)
+{
+    
+    if (t1->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
+        return node(k, RED, t1, t2);
+    RBTree* t = node(t1->data, t1->color, t1->left, join_to_r(t1->right, t2, k));
+    
+    if (t1->color == BLACK && t->right->color == RED && t->right->right->color == RED)
+    {
+        t->right->right->color = BLACK;
+        rotate_left(&t, t);
+    }
+    return t;
+    
+}
+
+
+RBTree* join_to_l(RBTree* t1, RBTree* t2, int k)
+{
+   
+    if (t2->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
+        return node(k, RED, t1, t2);
+    RBTree* t = node(t2->data, t2->color, join_to_l(t1, t2->left, k),t2->right);
+    
+    if (t2->color == BLACK && t->left->color == RED && t->left->left->color == RED)
+    {
+        t->left->left->color = BLACK;
+        rotate_right(&t, t);
+    }
+    return t;
+
+}
+
+
+RBTree* megre_rbt(RBTree* t1, RBTree* t2, int k)
+{
+    int bh1 = bh_of_rbtree(t1);
+    int bh2 = bh_of_rbtree(t2);
+    if (bh1 == bh2)
+        return node(k, BLACK, t1, t2);
+    if (bh1 > bh2)
+    {
+        RBTree* t = join_to_r(t1, t2, k);
+
+        if (t->color == RED && t->right->color == RED)
+            t->color == BLACK;
+        return t;
+        
+    }
+    if (bh1 < bh2)
+    {
+        RBTree* t = join_to_l(t1, t2, k);
+
+        if (t->color == RED && t->left->color == RED)
+            t->color == BLACK;
+        return t;
+
+    }
+}
+
+
 
 int main()
 {
-	char command;
+    char command;
 	int value;
 	RBTree* tree = NULL;
 	init_tree(&tree);
@@ -403,9 +501,12 @@ int main()
     {
 		switch (command) {
 		case 'a':
-			if (insert_into_rbt(&tree, value) == 1)
+            if (insert_into_rbt(&tree, value) == 1)
+            {
+                delete_tree(tree);
                 return 0;
-			break;
+            }
+            break;
 		case 'r':
 			delete_from_rbt(&tree, value);
 			break;
@@ -418,5 +519,6 @@ int main()
 		}
 	}
     delete_tree(tree);
-	return 0;
+
+    return 0;
 }
