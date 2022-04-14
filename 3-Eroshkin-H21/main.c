@@ -1,4 +1,6 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿#define  _CRTDBG_MAP_ALLOC
+#define _CRT_SECURE_NO_WARNINGS
+#include <crtdbg.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -495,15 +497,19 @@ int main()
 	RBTree* tree = NULL;
 	init_tree(&tree);
     if (tree == NULL)
-        return;
+        return; 
+  
 
+   
 	while (scanf("%c %d", &command, &value) >= 1) 
     {
-		switch (command) {
+		switch (command) 
+        {
 		case 'a':
             if (insert_into_rbt(&tree, value) == 1)
             {
                 delete_tree(tree);
+                free(NIL);
                 return 0;
             }
             break;
@@ -519,6 +525,6 @@ int main()
 		}
 	}
     delete_tree(tree);
-
+    free(NIL);
     return 0;
 }
