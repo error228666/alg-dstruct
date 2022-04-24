@@ -403,13 +403,28 @@ void delete_tree(RBTree* node)
 			delete_tree(node->left);
 		if (node->right != NIL)
 			delete_tree(node->right);
-		free(node);
+		if (node->left == NIL && node->right == NIL)
+		{
+			if (node->parent != NIL)
+			{
+				if (node->parent->left == node)
+					node->parent->left = NIL;
+				else
+					node->parent->right = NIL;
+			}
+			free(node);
+		}
 	}
 }
 
 RBTree* node(int k, Color color, RBTree* left, RBTree* right)
 {
 	RBTree* result = (RBTree*)malloc(sizeof(RBTree));
+	if (result == NULL)
+	{
+		printf("memory error");
+		return NULL;
+	}
 	result->data = k;
 	result->color = color;
 	result->left = left;
