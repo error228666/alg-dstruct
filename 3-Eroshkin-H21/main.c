@@ -450,6 +450,8 @@ int bh_of_rbtree(RBTree* t)
 
 RBTree* join_to_r(RBTree* t1, RBTree* t2, int k)
 {
+	if (t1 == NULL || t2 == NULL)
+		return NULL;
 	if (t1->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
 		return node(k, RED, t1, t2);
 	RBTree* t = node(t1->data, t1->color, t1->left, join_to_r(t1->right, t2, k));
@@ -466,6 +468,8 @@ RBTree* join_to_r(RBTree* t1, RBTree* t2, int k)
 
 RBTree* join_to_l(RBTree* t1, RBTree* t2, int k)
 {
+	if (t1 == NULL || t2 == NULL)
+		return NULL;
 	if (t2->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
 		return node(k, RED, t1, t2);
 	RBTree* t = node(t2->data, t2->color, join_to_l(t1, t2->left, k), t2->right);
