@@ -396,7 +396,8 @@ void print_tree(RBTree* node, int node_number)
 
 void delete_tree(RBTree* node)
 {
-	if (node != NULL)
+	
+	if (node != NIL)
 	{
 		if (node->left != NULL)
 			delete_tree(node->left);
@@ -443,8 +444,9 @@ RBTree* join_to_r(RBTree* t1, RBTree* t2, int k)
 		return NULL;
 	if (t1->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
 		return node(k, RED, t1, t2);
-	RBTree* t = node(t1->data, t1->color, t1->left, join_to_r(t1->right, t2, k));
-	if (t == NULL)
+	RBTree* t = t1;
+	t->right = join_to_r(t1->right, t2, k);
+	if (t->right == NULL)
 		return NULL;
 
 	if (t1->color == BLACK && t->right->color == RED && t->right->right->color == RED)
@@ -463,8 +465,10 @@ RBTree* join_to_l(RBTree* t1, RBTree* t2, int k)
 		return NULL;
 	if (t2->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
 		return node(k, RED, t1, t2);
-	RBTree* t = node(t2->data, t2->color, join_to_l(t1, t2->left, k), t2->right);
-	if (t == NULL)
+	RBTree* t = t2;
+	t->left = join_to_l(t1, t->left, k);
+	
+	if (t->left == NULL)
 		return NULL;
 
 	if (t2->color == BLACK && t->left->color == RED && t->left->left->color == RED)
@@ -512,7 +516,8 @@ int main()
 	init_tree(&tree);
 	if (tree == NULL)
 		return;
-
+	
+	
 	while (scanf("%c %d", &command, &value) >= 1)
 	{
 		switch (command)
@@ -537,7 +542,6 @@ int main()
 			break;
 		}
 	}
-
 	delete_tree(tree);
 	free(NIL);
 	return 0;
