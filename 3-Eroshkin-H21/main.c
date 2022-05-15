@@ -39,7 +39,7 @@ void init_tree(RBTree** node)
 		NIL->right = NIL;
 		NIL->parent = NIL;
 		NIL->left = NIL;
-		NIL->data = 0;
+		NIL->data = 228;
 	}
 
 	*node = NIL;
@@ -397,11 +397,11 @@ void print_tree(RBTree* node, int node_number)
 void delete_tree(RBTree* node)
 {
 	
-	if (node != NIL)
+	if (node != NIL && node != NULL)
 	{
-		if (node->left != NULL)
+		if (node->left != NIL && node->left != NULL)
 			delete_tree(node->left);
-		if (node->right != NULL)
+		if (node->right != NIL && node->right != NULL)
 			delete_tree(node->right);
 		free(node);
 	}
@@ -445,10 +445,11 @@ RBTree* join_to_r(RBTree* t1, RBTree* t2, int k)
 	if (t1->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
 		return node(k, RED, t1, t2);
 	RBTree* t = t1;
-	t->right = join_to_r(t1->right, t2, k);
-	if (t->right == NULL)
+	RBTree* tmp = join_to_r(t1->right, t2, k);
+	if (tmp == NULL)
 		return NULL;
-
+	else
+		t->right = tmp;
 	if (t1->color == BLACK && t->right->color == RED && t->right->right->color == RED)
 	{
 		t->right->right->color = BLACK;
@@ -466,11 +467,11 @@ RBTree* join_to_l(RBTree* t1, RBTree* t2, int k)
 	if (t2->color == BLACK && bh_of_rbtree(t1) == bh_of_rbtree(t2))
 		return node(k, RED, t1, t2);
 	RBTree* t = t2;
-	t->left = join_to_l(t1, t->left, k);
-	
-	if (t->left == NULL)
+	RBTree *tmp = join_to_l(t1, t->left, k);
+	if (tmp == NULL)
 		return NULL;
-
+	else
+		t->left = tmp;
 	if (t2->color == BLACK && t->left->color == RED && t->left->left->color == RED)
 	{
 		t->left->left->color = BLACK;
@@ -490,7 +491,12 @@ RBTree* megre_rbt(RBTree* t1, RBTree* t2, int k)
 	if (bh1 > bh2)
 	{
 		RBTree* t = join_to_r(t1, t2, k);
-
+		if (t == NULL)
+		{
+			delete_tree(t1);
+			delete_tree(t2);
+			return NULL;
+		}
 		if (t->color == RED && t->right->color == RED)
 			t->color == BLACK;
 		return t;
@@ -500,7 +506,12 @@ RBTree* megre_rbt(RBTree* t1, RBTree* t2, int k)
 	if (bh1 < bh2)
 	{
 		RBTree* t = join_to_l(t1, t2, k);
-
+		if (t == NULL)
+		{
+			delete_tree(t1);
+			delete_tree(t2);
+			return NULL;
+		}
 		if (t->color == RED && t->left->color == RED)
 			t->color == BLACK;
 		return t;
@@ -510,12 +521,13 @@ RBTree* megre_rbt(RBTree* t1, RBTree* t2, int k)
 
 int main()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
 	char command;
 	int value;
 	RBTree* tree = NULL;
 	init_tree(&tree);
-	if (tree == NULL)
-		return;
 	
 	
 	while (scanf("%c %d", &command, &value) >= 1)
@@ -542,7 +554,8 @@ int main()
 			break;
 		}
 	}
+	
 	delete_tree(tree);
 	free(NIL);
 	return 0;
-}
+	}
