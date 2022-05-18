@@ -145,7 +145,8 @@ int is_leaf(Tree *node)
 		return 0;
 }
 
-Tree* search(Tree* tree, int k) { // ѕоиск ключа k в 2-3 дереве с корнем p.
+Tree* search(Tree* tree, int k)
+{ 
 	if (tree == NULL) 
 		return NULL;
 
@@ -181,19 +182,19 @@ Tree* split(Tree* item)
 		return NULL;
 	}
 
-	if (x->first)  
+	if (x->first != NULL)  
 		x->first->parent = x; 
 	
-	if (x->second) 
+	if (x->second != NULL)
 		x->second->parent = x;
 	
-	if (y->first)  
+	if (y->first != NULL)
 		y->first->parent = y;    
 	
-	if (y->second) 
+	if (y->second != NULL)
 		y->second->parent = y;
 
-	if (item->parent) 
+	if (item->parent != NULL)
 	{
 		insert_to_node(item->parent,item->keys[1]);
 
@@ -204,7 +205,7 @@ Tree* split(Tree* item)
 		else if (item->parent->third == item) 
 			item->parent->third = NULL;
 
-		// ƒальше происходит своеобразна€ сортировка ключей при разделении.
+		
 		if (item->parent->first == NULL) 
 		{
 			item->parent->fourth = item->parent->third;
@@ -218,7 +219,8 @@ Tree* split(Tree* item)
 			item->parent->third = y;
 			item->parent->second = x;
 		}
-		else {
+		else 
+		{
 			item->parent->fourth = y;
 			item->parent->third = x;
 		}
@@ -229,24 +231,25 @@ Tree* split(Tree* item)
 	}
 	else 
 	{
-		x->parent = item;   // “ак как в эту ветку попадает только корень,
-		y->parent = item;   // то мы "родителем" новых вершин делаем раздел€ющийс€ элемент.
+		x->parent = item;   
+		y->parent = item;   
 		become_node2(item->keys[1],item, x, y);
 		return item;
 	}
 }
 
 
-Tree* insert_into_tree(Tree* tree, int k) { // вставка ключа k в дерево с корнем p; всегда возвращаем корень дерева, т.к. он может мен€тьс€
+Tree* insert_into_tree(Tree* tree, int k) 
+{ 
 	if (tree == NULL) 
-		return init_tree(k); // если дерево пусто, то создаем первую 2-3-вершину (корень)
+		return init_tree(k); 
 	
 	if (search(tree, k))
-		return split(tree);
+		return tree;
 	
-	if (is_leaf(tree))
+	if (is_leaf(tree) != NULL)
 		insert_to_node(tree, k);
-	else if (k <= tree->keys[0]) 
+	else if (k < tree->keys[0]) 
 		insert_into_tree(tree->first, k);
 	else if ((tree->size == 1) || ((tree->size == 2) && k <= tree->keys[1])) 
 		insert_into_tree(tree->second, k);
@@ -333,7 +336,8 @@ Tree* redistribute(Tree* leaf)
 	}
 	else if ((parent->size == 2) && ((first->size == 2) || (second->size == 2) || (third->size == 2))) 
 	{
-		if (third == leaf) {
+		if (third == leaf)
+		{
 			if (leaf->first != NULL)
 			{
 				leaf->second = leaf->first;
@@ -537,7 +541,7 @@ Tree* fix(Tree* leaf)
 	}
 	if (leaf->size != 0) 
 	{
-		if (leaf->parent) 
+		if (leaf->parent != NULL) 
 			return fix(leaf->parent);
 		else return leaf;
 	}
@@ -620,7 +624,8 @@ void lab()
 	while (fgets(command, 16, stdin)) 
 	{
 		sscanf(command, "%c%i", &ch, &key);
-		switch (ch) {
+		switch (ch) 
+		{
 		case 'a':
 			t = insert_into_tree(t, key);
 			break;
@@ -650,13 +655,7 @@ void lab()
 
 int main()
 {
-	/*Tree* t = NULL;
-	for (int i = 0; i < 5; i++)
-	{
-		t = insert(t, i);
-		print_tree(t, 1);
-		printf("\n");
-	}*/
+
 	lab();
 
 
