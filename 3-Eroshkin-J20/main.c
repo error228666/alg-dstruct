@@ -47,6 +47,7 @@ int Add_To_List(Node** head, char* str)
 	strcpy(new->str, str);
 	new->next = *head;
 	*head = new;
+	return 0;
 	
 
 }
@@ -93,11 +94,9 @@ void Delete_From_List(Node** head, char* str)
 			return;
 		}
 		if (prev != NULL)
-		{
 			prev->next = next;
-		}
 		else
-			*head= next;
+			*head = next;
 		free(del->str);
 		free(del);
 	}	
